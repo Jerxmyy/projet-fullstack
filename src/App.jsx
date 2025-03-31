@@ -13,21 +13,21 @@ const staticProducts = [
     id: 1,
     name: "The Legend of Zelda: Tears of the Kingdom",
     price: 299.99,
-    image_url:
+    img_url:
       "https://www.closeupshop.fr/media/oart_0/oart_t/oart_100708/1222069_G881960.JPG",
   },
   {
     id: 2,
     name: "Super Mario Bros Wonder",
     price: 59.99,
-    image_url:
+    img_url:
       "https://image.jeuxvideo.com/medias/170317/1703166833-1293-jaquette-avant.jpg",
   },
   {
     id: 3,
     name: "Elden Ring",
     price: 59.99,
-    image_url:
+    img_url:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTukje44kyOmrirl8gx8_EzdiTZiEBPTW8GHIb370Fd-x524HqWy8xpb8wHTEZLCuj4W_w&usqp=CAU",
   },
 ];
@@ -89,7 +89,7 @@ function App() {
             key={product.id}
             title={product.name}
             price={product.price}
-            imageUrl={product.image_url}
+            imageUrl={product.img_url}
           />
         ))}
       </div>
