@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const ProductCard = ({ id, title, price, img_url }) => {
+const ProductCard = ({ id_products, title, price, img_url }) => {
   return (
-    <Link to={`/product/${id}`} style={{ textDecoration: "none" }}>
+    <Link to={`/product/${id_products}`} style={{ textDecoration: "none" }}>
       <div
         style={{
           width: "280px",

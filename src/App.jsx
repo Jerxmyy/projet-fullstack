@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import ProductCard from "./component/ListProduct";
 import ProductDetail from "./component/DetailProduct";
+// import SupabaseClient from "@supabase/supabase-js";
 
 // Création du client Supabase
 export const supabase = createClient(
@@ -50,10 +51,8 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <h1
-          style={{ width: "100%", textAlign: "center", marginBottom: "30px" }}
-        >
-          Nos Produits
+        <h1 style={{ width: "100%", textAlign: "start", marginBottom: "30px" }}>
+          Jeux qui peuvent vous plaire : ({products.length})
         </h1>
         {products.length === 0 ? (
           <p>Aucun produit disponible</p>
@@ -61,7 +60,7 @@ function App() {
           products.map((product) => (
             <ProductCard
               key={product.id}
-              id={product.id}
+              id_products={product.id_products}
               title={product.title || "Sans titre"}
               price={Number(product.price) || 0}
               img_url={product.img_url}
@@ -77,7 +76,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/product/:id_products" element={<ProductDetail />} />
         </Routes>
       </div>
     </Router>
