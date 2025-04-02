@@ -42,6 +42,7 @@ function App() {
           flexWrap: "wrap",
           gap: "20px",
           justifyContent: "center",
+          backgroundColor: "#191F40",
         }}
       >
         <h1 style={{ width: "100%", textAlign: "start", marginBottom: "30px" }}>
