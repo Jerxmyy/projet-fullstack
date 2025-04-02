@@ -18,8 +18,11 @@ const ProductDetail = () => {
   // Choix plateforme
   const [selectedPlatform, setSelectedPlatform] = useState("");
 
-  // Affichage popup
+  // Affichage popup panier
   const [showPopup, setShowPopup] = useState(false);
+
+  // Affichage popup wishlist
+  const [showWishlistPopup, setShowWishlistPopup] = useState(false);
 
   // Récupération des données depuis Supabase
   useEffect(() => {
@@ -103,6 +106,17 @@ const ProductDetail = () => {
     return () => clearTimeout(timer);
   }, [showPopup]);
 
+  // Visibilité popup wishlist pendant 3 sec
+  useEffect(() => {
+    let timer;
+    if (showWishlistPopup) {
+      timer = setTimeout(() => {
+        setShowWishlistPopup(false);
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [showWishlistPopup]);
+
   // Gère le changement d'édition (Standard / Deluxe)
   const handleEditionChange = (edition) => {
     setSelectedEdition(edition);
@@ -118,6 +132,11 @@ const ProductDetail = () => {
     setShowPopup(true);
   };
 
+  // Ajout aux favoris + popup
+  const handleAddToWishlist = () => {
+    setShowWishlistPopup(true);
+  };
+
   // Calcul du prix en fonction de l'édition choisie
   const displayedPrice = product
     ? selectedEdition === "Edition Deluxe" && product.price_deluxe
@@ -125,7 +144,7 @@ const ProductDetail = () => {
       : product.price
     : 0;
 
-  // Style commun pour les boutons
+  // Style commun pour les boutons - transition retirée
   const buttonStyle = (isSelected) => ({
     padding: "8px 15px",
     backgroundColor: isSelected ? "#706ad5" : "#333",
@@ -133,7 +152,6 @@ const ProductDetail = () => {
     border: isSelected ? "2px solid white" : "none",
     borderRadius: "5px",
     cursor: "pointer",
-    transition: "all 0.2s ease",
   });
 
   // Editions disponibles - ne montre l'édition Deluxe que si elle existe
@@ -189,7 +207,7 @@ const ProductDetail = () => {
             borderRadius: "5px",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             zIndex: 1000,
-            animation: "fadeIn 0.3s ease-out",
+            animation: "fadeIn 0.3s",
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -197,6 +215,38 @@ const ProductDetail = () => {
             <div>
               <p style={{ margin: 0, fontWeight: "bold" }}>
                 Produit ajouté au panier
+              </p>
+              {product && (
+                <p style={{ margin: "5px 0 0 0", fontSize: "14px" }}>
+                  {product.title}, {selectedPlatform} ({selectedEdition})
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup d'ajout à la wishlist */}
+      {showWishlistPopup && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            backgroundColor: "#e91e63",
+            color: "white",
+            padding: "15px 20px",
+            borderRadius: "5px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            zIndex: 1000,
+            animation: "fadeIn 0.3s",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={{ marginRight: "10px" }}>❤️</span>
+            <div>
+              <p style={{ margin: 0, fontWeight: "bold" }}>
+                Produit ajouté à votre wishlist
               </p>
               {product && (
                 <p style={{ margin: "5px 0 0 0", fontSize: "14px" }}>
@@ -363,6 +413,7 @@ const ProductDetail = () => {
                       borderRadius: "5px",
                       cursor: "pointer",
                     }}
+                    onClick={handleAddToWishlist}
                   >
                     ❤️
                   </button>
@@ -493,7 +544,7 @@ const ProductDetail = () => {
       <style>
         {`
           @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
           }
         `}
