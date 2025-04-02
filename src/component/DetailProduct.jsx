@@ -11,9 +11,8 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Calcul prix
+  // Edition sélectionnée
   const [selectedEdition, setSelectedEdition] = useState("Edition standard");
-  const [calculatedPrice, setCalculatedPrice] = useState(0);
   // affichage de la popup
   const [showPopup, setShowPopup] = useState(false);
 
@@ -21,21 +20,43 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        // Récupération jeux par son ID
-        const { data, error } = await supabase
+
+        // Récupérer le produit de base
+        const { data: productData, error: productError } = await supabase
           .from("products")
           .select("*")
           .eq("id_products", id_products)
           .single();
 
-        if (error) throw error;
+        if (productError) throw productError;
 
-        if (data) {
-          setProduct(data);
-          setCalculatedPrice(data.price);
-        } else {
-          setError("Produit non trouvé");
-        }
+        // Récupérer les plateformes associées
+        const { data: platformsData } = await supabase
+          .from("v_platforms_products")
+          .select("*")
+          .eq("id_products", id_products);
+
+        // Récupérer les genres associés
+        const { data: genresData } = await supabase
+          .from("v_genres_products")
+          .select("*")
+          .eq("id_products", id_products);
+
+        // Récupérer les éditeurs associés
+        const { data: editorsData } = await supabase
+          .from("v_editors_products")
+          .select("*")
+          .eq("id_products", id_products);
+
+        // Combiner les données
+        const data = {
+          ...productData,
+          platforms: platformsData,
+          genres: genresData,
+          editors: editorsData,
+        };
+
+        setProduct(data);
       } catch (err) {
         setError("Erreur lors du chargement du produit");
         console.error(err);
@@ -58,26 +79,22 @@ const ProductDetail = () => {
     return () => clearTimeout(timer);
   }, [showPopup]);
 
-  // Gestion d'évènements
   // Changer d'édition
   const handleEditionChange = (e) => {
-    const edition = e.target.value;
-    setSelectedEdition(edition);
-
-    // gestion prix par rapport a l'edition
-    if (product) {
-      if (edition === "Edition Deluxe") {
-        setCalculatedPrice(product.price + 9.99);
-      } else {
-        setCalculatedPrice(product.price);
-      }
-    }
+    setSelectedEdition(e.target.value);
   };
 
-  // Gestion de l'ajout au panier
+  // Ajout panier + Popup
   const handleAddToCart = () => {
     setShowPopup(true);
   };
+
+  // Calcul du prix à afficher en fonction de l'édition
+  const priceDeluxe = product
+    ? selectedEdition === "Edition Deluxe" && product.price_deluxe
+      ? product.price_deluxe
+      : product.price
+    : 0;
 
   // Rendu Visuel composant
   return (
@@ -253,10 +270,21 @@ const ProductDetail = () => {
                     flexWrap: "wrap",
                   }}
                 >
-                  <span style={{ fontSize: "28px", fontWeight: "bold" }}>
-                    {calculatedPrice.toFixed(2)}€
-                  </span>
-                  {selectedEdition === "Edition Deluxe"}
+                  {selectedEdition === "Edition Deluxe" &&
+                  !product.price_deluxe ? (
+                    <span style={{ fontSize: "28px" }}>
+                      Veuilez nous excusez, mais l'edition Deluxe de "
+                      {product.title}" n'est pas disponible
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: "28px", fontWeight: "bold" }}>
+                      {(selectedEdition === "Edition Deluxe"
+                        ? product.price_deluxe
+                        : product.price
+                      ).toFixed(2)}
+                      €
+                    </span>
+                  )}
                 </div>
 
                 {/* CTA pour mettre en favoris et ajouter au panier */}
@@ -326,7 +354,7 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                {/* Indication de la plateforme + studio de dev DÉPLACÉ ICI */}
+                {/* Indication de la plateforme + studio de dev */}
                 <div
                   style={{
                     display: "grid",

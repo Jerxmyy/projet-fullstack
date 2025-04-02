@@ -59,7 +59,7 @@ function App() {
         ) : (
           products.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product.id_products}
               id_products={product.id_products}
               title={product.title || "Sans titre"}
               price={Number(product.price) || 0}
