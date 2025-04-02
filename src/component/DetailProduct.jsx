@@ -1,6 +1,13 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
+// Import des composants de boutons
+import {
+  BackButton,
+  SelectionButton,
+  IconButton,
+  PrimaryButton,
+} from "./ButtonComponents";
 
 // Composant ProductDetail
 // Affiche détails produit récupéré depuis la BDD via l'ID
@@ -47,14 +54,6 @@ const ProductDetail = () => {
 
         if (platformsError) throw platformsError;
 
-        // // Récup dev
-        // const { data: creatorsData, error: creatorsError } = await supabase
-        //   .from("v_creators_products")
-        //   .select("*")
-        //   .eq("id_products", id_products);
-
-        // if (editorsError) throw editorsError;
-
         // Récup editeur
         const { data: editorsData, error: editorsError } = await supabase
           .from("v_editors_products")
@@ -78,7 +77,6 @@ const ProductDetail = () => {
           editors: editorsData || [],
           genres: genresData || [],
         };
-        console.log(combinedData);
         setProduct(combinedData);
 
         if (platformsData && platformsData.length > 0) {
@@ -144,16 +142,6 @@ const ProductDetail = () => {
       : product.price
     : 0;
 
-  // Style commun pour les boutons - transition retirée
-  const buttonStyle = (isSelected) => ({
-    padding: "8px 15px",
-    backgroundColor: isSelected ? "#706ad5" : "#333",
-    color: "white",
-    border: isSelected ? "2px solid white" : "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  });
-
   // Editions disponibles - ne montre l'édition Deluxe que si elle existe
   const getAvailableEditions = () => {
     const editions = [{ id: 1, name: "Edition standard" }];
@@ -176,22 +164,7 @@ const ProductDetail = () => {
     >
       {/* CTA accueil */}
       <Link to="/">
-        <button
-          className="back-button"
-          style={{
-            backgroundColor: "black",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            position: "relative",
-            zIndex: 2,
-            margin: "20px",
-          }}
-        >
-          Accueil
-        </button>
+        <BackButton>Accueil</BackButton>
       </Link>
 
       {/* Popup d'ajout au panier */}
@@ -327,15 +300,13 @@ const ProductDetail = () => {
                       style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
                     >
                       {product.platforms.map((platform) => (
-                        <button
+                        <SelectionButton
                           key={platform.id_platforms}
+                          isSelected={selectedPlatform === platform.name}
                           onClick={() => handlePlatformChange(platform.name)}
-                          style={buttonStyle(
-                            selectedPlatform === platform.name
-                          )}
                         >
                           {platform.name}
-                        </button>
+                        </SelectionButton>
                       ))}
                     </div>
                   </div>
@@ -367,10 +338,10 @@ const ProductDetail = () => {
                       style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
                     >
                       {getAvailableEditions().map((edition) => (
-                        <button
+                        <SelectionButton
                           key={edition.id}
+                          isSelected={selectedEdition === edition.name}
                           onClick={() => handleEditionChange(edition.name)}
-                          style={buttonStyle(selectedEdition === edition.name)}
                         >
                           {edition.name}
                           {edition.priceIncrease && (
@@ -380,7 +351,7 @@ const ProductDetail = () => {
                               (+{edition.priceIncrease}€)
                             </span>
                           )}
-                        </button>
+                        </SelectionButton>
                       ))}
                     </div>
                   </div>
@@ -404,36 +375,10 @@ const ProductDetail = () => {
                 <div
                   style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
                 >
-                  <button
-                    style={{
-                      padding: "10px",
-                      backgroundColor: "#706ad5",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                    }}
-                    onClick={handleAddToWishlist}
-                  >
-                    ❤️
-                  </button>
-                  <button
-                    style={{
-                      flex: "1",
-                      padding: "10px 20px",
-                      backgroundColor: "#706ad5",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onClick={handleAddToCart}
-                  >
+                  <IconButton onClick={handleAddToWishlist}>❤️</IconButton>
+                  <PrimaryButton onClick={handleAddToCart}>
                     Ajouter au panier
-                  </button>
+                  </PrimaryButton>
                 </div>
 
                 {/* Note / Metacritique */}
