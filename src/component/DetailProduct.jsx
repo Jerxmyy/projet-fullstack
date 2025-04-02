@@ -44,7 +44,15 @@ const ProductDetail = () => {
 
         if (platformsError) throw platformsError;
 
-        // Récup le studios de dev
+        // // Récup dev
+        // const { data: creatorsData, error: creatorsError } = await supabase
+        //   .from("v_creators_products")
+        //   .select("*")
+        //   .eq("id_products", id_products);
+
+        // if (editorsError) throw editorsError;
+
+        // Récup editeur
         const { data: editorsData, error: editorsError } = await supabase
           .from("v_editors_products")
           .select("*")
@@ -67,6 +75,7 @@ const ProductDetail = () => {
           editors: editorsData || [],
           genres: genresData || [],
         };
+        console.log(combinedData);
         setProduct(combinedData);
 
         if (platformsData && platformsData.length > 0) {
@@ -95,13 +104,13 @@ const ProductDetail = () => {
   }, [showPopup]);
 
   // Gère le changement d'édition (Standard / Deluxe)
-  const handleEditionChange = (e) => {
-    setSelectedEdition(e.target.value);
+  const handleEditionChange = (edition) => {
+    setSelectedEdition(edition);
   };
 
   // Gère le changement de plateforme si plusieurs sont disponibles
-  const handlePlatformChange = (e) => {
-    setSelectedPlatform(e.target.value);
+  const handlePlatformChange = (platform) => {
+    setSelectedPlatform(platform);
   };
 
   // Ajout au panier + popup
@@ -116,12 +125,38 @@ const ProductDetail = () => {
       : product.price
     : 0;
 
+  // Style commun pour les boutons
+  const buttonStyle = (isSelected) => ({
+    padding: "8px 15px",
+    backgroundColor: isSelected ? "#706ad5" : "#333",
+    color: "white",
+    border: isSelected ? "2px solid white" : "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  });
+
+  // Editions disponibles - ne montre l'édition Deluxe que si elle existe
+  const getAvailableEditions = () => {
+    const editions = [{ id: 1, name: "Edition standard" }];
+
+    if (product && product.price_deluxe) {
+      editions.push({
+        id: 2,
+        name: "Edition Deluxe",
+        priceIncrease: (product.price_deluxe - product.price).toFixed(2),
+      });
+    }
+
+    return editions;
+  };
+
   return (
     <div
       className="container"
       style={{ position: "relative", width: "100%", margin: 0, padding: 0 }}
     >
-      {/* Bouton de retour à l'accueil */}
+      {/* CTA accueil */}
       <Link to="/">
         <button
           className="back-button"
@@ -235,7 +270,28 @@ const ProductDetail = () => {
                   {product.title}
                 </h1>
 
-                {/* Sélecteur de plateforme, stock et téléchargement digital */}
+                {/* Choix plateforme */}
+                {product.platforms && product.platforms.length > 0 && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <div
+                      style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
+                    >
+                      {product.platforms.map((platform) => (
+                        <button
+                          key={platform.id_platforms}
+                          onClick={() => handlePlatformChange(platform.name)}
+                          style={buttonStyle(
+                            selectedPlatform === platform.name
+                          )}
+                        >
+                          {platform.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Infos stock et téléchargement digital */}
                 <div
                   style={{
                     display: "flex",
@@ -245,29 +301,6 @@ const ProductDetail = () => {
                     alignItems: "center",
                   }}
                 >
-                  {product.platforms && product.platforms.length > 0 && (
-                    <select
-                      style={{
-                        padding: "10px",
-                        backgroundColor: "#333",
-                        color: "white",
-                        border: "1px solid #555",
-                        borderRadius: "5px",
-                      }}
-                      onChange={handlePlatformChange}
-                      value={selectedPlatform}
-                    >
-                      {product.platforms.map((platform) => (
-                        <option
-                          key={platform.id_platforms}
-                          value={platform.name}
-                        >
-                          {platform.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
                   <div style={{ fontSize: "14px" }}>
                     <b style={{ color: "#4CAF50" }}>✓</b> En stock
                   </div>
@@ -276,26 +309,34 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                {/* Sélecteur d'édition (Standard / Deluxe) */}
-                <div style={{ marginBottom: "15px" }}>
-                  <select
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      backgroundColor: "#333",
-                      color: "white",
-                      border: "1px solid #555",
-                      borderRadius: "5px",
-                    }}
-                    onChange={handleEditionChange}
-                    value={selectedEdition}
-                  >
-                    <option>Edition standard</option>
-                    <option>Edition Deluxe</option>
-                  </select>
-                </div>
+                {/* Choix Edition UNIQUEMENT si Autre Edition Dispo */}
+                {product.price_deluxe && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <h3 style={{ marginBottom: "10px" }}>Éditions :</h3>
+                    <div
+                      style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
+                    >
+                      {getAvailableEditions().map((edition) => (
+                        <button
+                          key={edition.id}
+                          onClick={() => handleEditionChange(edition.name)}
+                          style={buttonStyle(selectedEdition === edition.name)}
+                        >
+                          {edition.name}
+                          {edition.priceIncrease && (
+                            <span
+                              style={{ marginLeft: "8px", fontSize: "14px" }}
+                            >
+                              (+{edition.priceIncrease}€)
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                {/* Prix de l'édition choisie */}
+                {/* Prix édition choisie */}
                 <div
                   style={{
                     marginBottom: "20px",
@@ -304,20 +345,12 @@ const ProductDetail = () => {
                     flexWrap: "wrap",
                   }}
                 >
-                  {selectedEdition === "Edition Deluxe" &&
-                  !product.price_deluxe ? (
-                    <span style={{ fontSize: "28px" }}>
-                      Veuillez nous excusez, mais l'édition Deluxe de "
-                      {product.title}" n'est pas disponible
-                    </span>
-                  ) : (
-                    <span style={{ fontSize: "28px", fontWeight: "bold" }}>
-                      {displayedPrice}€
-                    </span>
-                  )}
+                  <span style={{ fontSize: "28px", fontWeight: "bold" }}>
+                    {displayedPrice}€
+                  </span>
                 </div>
 
-                {/* Boutons Favoris + Ajouter au panier */}
+                {/* CTA Favoris + Ajouter au panier */}
                 <div
                   style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
                 >
@@ -352,7 +385,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                {/* Note / avis */}
+                {/* Note / Metacritique */}
                 <div
                   style={{
                     display: "flex",
@@ -393,15 +426,7 @@ const ProductDetail = () => {
                     marginBottom: "20px",
                   }}
                 >
-                  {/* Plateforme choisie */}
-                  <div>
-                    <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                      Plateforme :
-                    </h3>
-                    <p>{selectedPlatform}</p>
-                  </div>
-
-                  {/* Voir le studio de dev */}
+                  {/* Développé par :*/}
                   <div>
                     <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
                       Développé par :
@@ -415,7 +440,7 @@ const ProductDetail = () => {
                     )}
                   </div>
 
-                  {/* Voir les Editeurs */}
+                  {/* Edité par : */}
                   <div>
                     <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
                       Edité par :
@@ -429,14 +454,14 @@ const ProductDetail = () => {
                     )}
                   </div>
 
-                  {/* Genres liés au produit */}
+                  {/* Genre(s) : */}
                   <div>
                     <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
                       Genre(s) :
                     </h3>
                     {product.genres && product.genres.length > 0 ? (
                       product.genres.map((genre) => (
-                        <p key={genre.id_genres}>{genre.name}</p>
+                        <p key={genre.id_genres}>{genre.genre_name}</p>
                       ))
                     ) : (
                       <p>Aucun genre renseigné.</p>
@@ -446,10 +471,10 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Section "À propos" + description + genres */}
+            {/* Description */}
             <div style={{ maxWidth: "1200px", margin: "40px auto 0" }}>
               <div style={{ marginBottom: "20px" }}>
-                <h2 style={{ fontSize: "24px" }}>À propos</h2>
+                <h1 style={{ fontSize: "28px" }}>Description</h1>
               </div>
 
               {/* Description du jeu */}
@@ -464,7 +489,7 @@ const ProductDetail = () => {
         </>
       )}
 
-      {/* Animation pour la popup */}
+      {/* Anim popup */}
       <style>
         {`
           @keyframes fadeIn {
