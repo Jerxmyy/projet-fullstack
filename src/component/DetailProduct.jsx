@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
 // Composant ProductDetail
-// Affiche les détails d'un produit spécifique récupéré depuis la BDD
-// en utilisant l'ID fourni dans les paramètres d'URL
+// Affiche détails produit récupéré depuis la BDD via l'ID
 
 const ProductDetail = () => {
   const { id_products } = useParams();
@@ -13,13 +12,13 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Édition sélectionnée (Standard / Deluxe)
+  // Choix edition
   const [selectedEdition, setSelectedEdition] = useState("Edition standard");
 
-  // Plateforme sélectionnée (s'il y en a plusieurs)
+  // Choix plateforme
   const [selectedPlatform, setSelectedPlatform] = useState("");
 
-  // Affichage de la popup "ajouté au panier"
+  // Affichage popup
   const [showPopup, setShowPopup] = useState(false);
 
   // Récupération des données depuis Supabase
@@ -28,7 +27,7 @@ const ProductDetail = () => {
       try {
         setLoading(true);
 
-        // Récupérer le produit de base
+        // Récup jeux
         const { data: productData, error: productError } = await supabase
           .from("products")
           .select("*")
@@ -37,7 +36,7 @@ const ProductDetail = () => {
 
         if (productError) throw productError;
 
-        // Récupérer les plateformes associées
+        // Récup plateforme dispo
         const { data: platformsData, error: platformsError } = await supabase
           .from("v_platforms_products")
           .select("*")
@@ -45,7 +44,7 @@ const ProductDetail = () => {
 
         if (platformsError) throw platformsError;
 
-        // Récupérer les éditeurs associés (studios de dev)
+        // Récup le studios de dev
         const { data: editorsData, error: editorsError } = await supabase
           .from("v_editors_products")
           .select("*")
@@ -53,7 +52,7 @@ const ProductDetail = () => {
 
         if (editorsError) throw editorsError;
 
-        // Récupérer les genres associés
+        // Récup genres du jeux
         const { data: genresData, error: genresError } = await supabase
           .from("v_genres_products")
           .select("*")
@@ -61,17 +60,15 @@ const ProductDetail = () => {
 
         if (genresError) throw genresError;
 
-        // Combiner toutes les données
+        // Affichage de toute les données
         const combinedData = {
           ...productData,
           platforms: platformsData || [],
           editors: editorsData || [],
           genres: genresData || [],
         };
-
         setProduct(combinedData);
 
-        // Par défaut, on sélectionne la première plateforme si elle existe
         if (platformsData && platformsData.length > 0) {
           setSelectedPlatform(platformsData[0].name);
         }
@@ -86,7 +83,7 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id_products]);
 
-  // Affichage de la popup d'ajout au panier pendant 3 secondes
+  // Visibilité popup pendant 3 sec
   useEffect(() => {
     let timer;
     if (showPopup) {
@@ -140,7 +137,7 @@ const ProductDetail = () => {
             margin: "20px",
           }}
         >
-          Retour à l'accueil
+          Accueil
         </button>
       </Link>
 
@@ -168,7 +165,7 @@ const ProductDetail = () => {
               </p>
               {product && (
                 <p style={{ margin: "5px 0 0 0", fontSize: "14px" }}>
-                  {product.title} ({selectedEdition})
+                  {product.title}, {selectedPlatform} ({selectedEdition})
                 </p>
               )}
             </div>
@@ -212,27 +209,28 @@ const ProductDetail = () => {
                 display: "flex",
                 flexDirection: "row",
                 gap: "20px",
-                maxWidth: "1200px",
+                maxWidth: "1800px",
                 margin: "0 auto",
                 flexWrap: "wrap",
               }}
             >
               {/* Affiche l'image du produit */}
-              <div style={{ flex: "1", minWidth: "300px" }}>
+              <div style={{ flex: "1", minWidth: "980px" }}>
                 <img
                   src={product.img_url}
                   alt={product.title}
                   style={{
-                    width: "300px",
-                    height: "400px",
+                    width: "600px",
+                    height: "700px",
                     objectFit: "cover",
-                    borderRadius: "8px",
+                    borderRadius: "20px",
+                    marginLeft: "100px",
                   }}
                 />
               </div>
 
-              {/* Informations + actions */}
-              <div style={{ flex: "1", minWidth: "300px" }}>
+              {/* Informations */}
+              <div style={{ flex: "1", minWidth: "400px" }}>
                 <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>
                   {product.title}
                 </h1>
@@ -278,11 +276,6 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                {/* Nombre d'utilisateurs sur la page */}
-                <div style={{ marginBottom: "15px" }}>
-                  <span>267 utilisateurs sur cette page</span>
-                </div>
-
                 {/* Sélecteur d'édition (Standard / Deluxe) */}
                 <div style={{ marginBottom: "15px" }}>
                   <select
@@ -302,7 +295,7 @@ const ProductDetail = () => {
                   </select>
                 </div>
 
-                {/* Prix en fonction de l'édition choisie */}
+                {/* Prix de l'édition choisie */}
                 <div
                   style={{
                     marginBottom: "20px",
@@ -319,7 +312,7 @@ const ProductDetail = () => {
                     </span>
                   ) : (
                     <span style={{ fontSize: "28px", fontWeight: "bold" }}>
-                      {displayedPrice.toFixed(2)}€
+                      {displayedPrice}€
                     </span>
                   )}
                 </div>
@@ -331,7 +324,7 @@ const ProductDetail = () => {
                   <button
                     style={{
                       padding: "10px",
-                      backgroundColor: "#E91E63",
+                      backgroundColor: "#706ad5",
                       color: "white",
                       border: "none",
                       borderRadius: "5px",
@@ -344,7 +337,7 @@ const ProductDetail = () => {
                     style={{
                       flex: "1",
                       padding: "10px 20px",
-                      backgroundColor: "#E91E63",
+                      backgroundColor: "#706ad5",
                       color: "white",
                       border: "none",
                       borderRadius: "5px",
@@ -359,7 +352,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                {/* Note / avis (exemple statique) */}
+                {/* Note / avis */}
                 <div
                   style={{
                     display: "flex",
@@ -391,7 +384,7 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                {/* Informations complémentaires (Plateforme, Développé par, etc.) */}
+                {/* Plateforme + Développé par + Genres du jeux */}
                 <div
                   style={{
                     display: "grid",
@@ -408,10 +401,24 @@ const ProductDetail = () => {
                     <p>{selectedPlatform}</p>
                   </div>
 
-                  {/* Développé par (éditeurs) */}
+                  {/* Voir le studio de dev */}
                   <div>
                     <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
                       Développé par :
+                    </h3>
+                    {product.creators && product.creators.length > 0 ? (
+                      product.creators.map((creator) => (
+                        <p key={creator.id_creators}>{creator.name}</p>
+                      ))
+                    ) : (
+                      <p> Studio de dev non renseigné.</p>
+                    )}
+                  </div>
+
+                  {/* Voir les Editeurs */}
+                  <div>
+                    <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                      Edité par :
                     </h3>
                     {product.editors && product.editors.length > 0 ? (
                       product.editors.map((editor) => (
@@ -419,6 +426,20 @@ const ProductDetail = () => {
                       ))
                     ) : (
                       <p>Aucun éditeur renseigné.</p>
+                    )}
+                  </div>
+
+                  {/* Genres liés au produit */}
+                  <div>
+                    <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                      Genre(s) :
+                    </h3>
+                    {product.genres && product.genres.length > 0 ? (
+                      product.genres.map((genre) => (
+                        <p key={genre.id_genres}>{genre.name}</p>
+                      ))
+                    ) : (
+                      <p>Aucun genre renseigné.</p>
                     )}
                   </div>
                 </div>
@@ -432,21 +453,12 @@ const ProductDetail = () => {
               </div>
 
               {/* Description du jeu */}
-              <p style={{ marginBottom: "20px" }}>{product.description}</p>
-
-              {/* Genres liés au produit */}
-              <div>
-                <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                  Genre(s) :
-                </h3>
-                {product.genres && product.genres.length > 0 ? (
-                  product.genres.map((genre) => (
-                    <p key={genre.id_genres}>{genre.name}</p>
-                  ))
-                ) : (
-                  <p>Aucun genre renseigné.</p>
-                )}
-              </div>
+              <div
+                style={{ marginBottom: "20px" }}
+                dangerouslySetInnerHTML={{
+                  __html: product.description,
+                }}
+              ></div>
             </div>
           </div>
         </>

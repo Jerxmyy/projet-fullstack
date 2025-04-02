@@ -45,7 +45,7 @@ function App() {
         }}
       >
         <h1 style={{ width: "100%", textAlign: "start", marginBottom: "30px" }}>
-          Jeux qui peuvent vous plaire : ({products.length})
+          Votre prochaine aventure commence ici !
         </h1>
         {products.length === 0 ? (
           <p>Aucun produit disponible</p>
