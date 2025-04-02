@@ -1,15 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import ProductCard from "./component/ListProduct";
 import ProductDetail from "./component/DetailProduct";
-// import SupabaseClient from "@supabase/supabase-js";
-
-// Création du client Supabase
-export const supabase = createClient(
-  "https://qvonhyxawuzkqaaihsbs.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2b25oeXhhd3V6a3FhYWloc2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0MTI3NzMsImV4cCI6MjA1ODk4ODc3M30.T8_69hU42d03wlhhBo8VL4n2qSLxwQ87AIDg6xGksFw"
-);
+import { supabase } from "./supabaseClient";
 
 function App() {
   const [products, setProducts] = useState([]);
