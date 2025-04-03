@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import ProductCard from "./component/CardProduct";
+import Lister from "./component/Lister";
 import ProductDetail from "./component/DetailProduct";
 import { supabase } from "./supabaseClient";
 import GameLibNavbar from "./component/NavBar";
@@ -51,18 +51,10 @@ function App() {
           Votre prochaine aventure commence ici !
         </h1>
 
-        {products.length === 0 ? (
-          <p>Aucun produit disponible</p>
+        {products.length > 0 ? (
+          <Lister products={products} />
         ) : (
-          products.map((product) => (
-            <ProductCard
-              key={product.id_products}
-              id_products={product.id_products}
-              title={product.title || "Sans titre"}
-              price={Number(product.price) || 0}
-              img_url={product.img_url}
-            />
-          ))
+          <p>Aucun produit trouvé pour cette plateforme.</p>
         )}
       </div>
     );

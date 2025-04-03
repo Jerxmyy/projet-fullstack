@@ -1,13 +1,12 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import ProductDetail from "./DetailProduct";
 import GameLibNavbar from "./NavBar";
-import ProductCard from "./CardProduct";
+import Lister from "./Lister";
 import { BackButton } from "./ButtonComponents";
 
 function PlatformProducts() {
-  const { id_platforms } = useParams(); // Récupère l'ID de la plateforme depuis l'URL
+  const { id_platforms } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,29 +38,23 @@ function PlatformProducts() {
       style={{
         padding: "20px",
         display: "flex",
-        flexWrap: "wrap",
+        flexDirection: "column",
+        alignItems: "start",
         gap: "20px",
-        justifyContent: "center",
         backgroundColor: "#191F40",
       }}
     >
-      <GameLibNavbar></GameLibNavbar>
-      <h1 className="platform-title">
-        Produits pour la plateforme {id_platforms}
+      <GameLibNavbar />
+      <div style={{ paddingLeft: "20px" }}>
+        <Link to="/">
+          <BackButton>Accueil</BackButton>
+        </Link>
+      </div>
+      <h1 style={{ paddingLeft: "40px" }}>
+        Produits pour la plateforme {id_platforms.name}
       </h1>
-
-      {products.length ? (
-        <div className="products-container">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id_products}
-              id_products={product.id_products}
-              title={product.title || "Sans titre"}
-              price={Number(product.price) || 0}
-              img_url={product.img_url}
-            />
-          ))}
-        </div>
+      {products.length > 0 ? (
+        <Lister products={products} />
       ) : (
         <p>Aucun produit trouvé pour cette plateforme.</p>
       )}

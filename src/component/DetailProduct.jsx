@@ -123,7 +123,6 @@ const ProductDetail = () => {
 
   return (
     <div className="product-detail-container">
-      {/* Bouton retour */}
       <Link to="/">
         <BackButton>Accueil</BackButton>
       </Link>
