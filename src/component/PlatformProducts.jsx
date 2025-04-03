@@ -8,26 +8,42 @@ import { BackButton } from "./ButtonComponents";
 function PlatformProducts() {
   const { id_platforms } = useParams();
   const [products, setProducts] = useState([]);
+  const [platformName, setPlatformName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchData() {
       try {
-        const { data, error } = await supabase
+        // Récupérer les informations de la plateforme
+        const { data: platformData, error: platformError } = await supabase
+          .from("v_platforms_products")
+          .select("name")
+          .eq("id_platforms", id_platforms);
+
+        if (platformError) throw platformError;
+
+        // Si des données sont retournées, prendre le premier élément
+        if (platformData && platformData.length > 0) {
+          setPlatformName(platformData[0].name);
+        }
+
+        // Récupérer les produits
+        const { data: productsData, error: productsError } = await supabase
           .from("v_products_platforms")
           .select("*")
           .eq("id_platforms", id_platforms);
 
-        if (error) throw error;
-        setProducts(data);
+        if (productsError) throw productsError;
+        setProducts(productsData);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
-    fetchProducts();
+
+    fetchData();
   }, [id_platforms]);
 
   if (loading) return <div>Chargement...</div>;
@@ -51,7 +67,7 @@ function PlatformProducts() {
         </Link>
       </div>
       <h1 style={{ paddingLeft: "40px" }}>
-        Produits pour la plateforme {id_platforms.name}
+        Jeux disponible pour {platformName || id_platforms}
       </h1>
       {products.length > 0 ? (
         <Lister products={products} />
