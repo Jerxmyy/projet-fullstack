@@ -11,7 +11,7 @@ const ProductCard = ({ id_products, title, price, img_url }) => {
         <img src={img_url} alt={title} className="product-image" />
         {/* Informations du produit */}
         <div className="product-info">
-          <h6 className="product-title">{title}</h6>
+          <h2 className="product-title">{title}</h2>
           {/* Affichage du prix */}
           <div className="product-price">
             <span>{price}€</span>

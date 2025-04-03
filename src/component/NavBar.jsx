@@ -1,51 +1,76 @@
-import Button from "react-bootstrap/Button";
+import { useState } from "react";
+import { useGameData } from "../hook/useGameData";
+import {
+  FaWindows,
+  FaPlaystation,
+  FaXbox,
+  FaGamepad,
+  FaSearch,
+} from "react-icons/fa";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
-function NavScrollExample() {
+function GameLibNavbar() {
+  const { platforms, loading, error } = useGameData();
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const platformIcons = {
+    PC: <FaWindows className="platform-icon" />,
+    PlayStation: <FaPlaystation className="platform-icon" />,
+    Xbox: <FaXbox className="platform-icon" />,
+    Nintendo: <FaGamepad className="platform-icon" />,
+  };
+
+  const handleSearchClick = () => {
+    setSearchVisible(!searchVisible);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="game-navbar">
       <Container fluid>
-        <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="me-auto my-2 my-lg-0"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          >
-            <Nav.Link href="#action1">Home</Nav.Link>
-            <Nav.Link href="#action2">Link</Nav.Link>
-            <NavDropdown title="Link" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link href="#" disabled>
-              Link
-            </Nav.Link>
-          </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
+        <Nav className="me-auto navbar-nav">
+          {error && (
+            <Nav.Link className="text-danger">Erreur: {error}</Nav.Link>
+          )}
+          {loading ? (
+            <Nav.Link disabled>Chargement...</Nav.Link>
+          ) : (
+            platforms.map((platform) => (
+              <Nav.Link
+                key={platform.id}
+                as={Link}
+                to={`/product/platform/${platform.id}`} // Lien mis à jour avec react-router-dom
+              >
+                {platformIcons[platform.name] || null} {platform.name}
+              </Nav.Link>
+            ))
+          )}
+        </Nav>
+        <div className="search-container">
+          <button className="search-button" onClick={handleSearchClick}>
+            <FaSearch size={24} />
+          </button>
+          {searchVisible && (
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Rechercher..."
+              value={searchQuery}
+              onChange={handleSearchChange}
             />
-            <Button variant="outline-success">Search</Button>
-          </Form>
-        </Navbar.Collapse>
+          )}
+        </div>
       </Container>
     </Navbar>
   );
 }
 
-export default NavScrollExample;
+export default GameLibNavbar;

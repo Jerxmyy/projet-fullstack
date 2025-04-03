@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import ProductCard from "./component/ListProduct";
 import ProductDetail from "./component/DetailProduct";
 import { supabase } from "./supabaseClient";
-import NavScrollExample from "./component/NavBar";
+import GameLibNavbar from "./component/NavBar";
+import PlatformProducts from "./component/PlatformProducts";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -46,7 +47,7 @@ function App() {
           backgroundColor: "#191F40",
         }}
       >
-        <NavScrollExample></NavScrollExample>
+        <GameLibNavbar></GameLibNavbar>
         <h1 style={{ width: "100%", textAlign: "start", marginBottom: "30px" }}>
           Votre prochaine aventure commence ici !
         </h1>
@@ -72,6 +73,10 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route
+            path="/product/platform/:id_platforms"
+            element={<PlatformProducts />}
+          />
           <Route path="/product/:id_products" element={<ProductDetail />} />
         </Routes>
       </div>
