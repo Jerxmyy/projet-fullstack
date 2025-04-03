@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./ProductCard.css"; // Import du fichier CSS
+import "./ListProduct.css";
 
 // Composant ProductCard -> carte cliquable
 const ProductCard = ({ id_products, title, price, img_url }) => {
