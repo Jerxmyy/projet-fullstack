@@ -1,0 +1,52 @@
+/* Retour Acceuil */
+.back-button {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  margin: 20px;
+}
+
+/* CTA plateforme/edition dispo */
+.selection-button {
+  padding: 8px 15px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* CTA plateforme/edition choisi */
+.selection-button.selected {
+  background-color: #706ad5;
+  border: 2px solid white;
+}
+
+/* CTA Favoris/Wishlist */
+.icon-button {
+  padding: 10px;
+  background-color: #706ad5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* CTA Panier */
+.primary-button {
+  flex: 1;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
