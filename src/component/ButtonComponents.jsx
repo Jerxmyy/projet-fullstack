@@ -69,7 +69,7 @@ export const PrimaryButton = ({ onClick, children }) => {
       style={{
         flex: "1",
         padding: "10px 20px",
-        backgroundColor: "#706ad5",
+        backgroundColor: "#4CAF50",
         color: "white",
         border: "none",
         borderRadius: "5px",
