@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-// Import des composants de boutons
+
 import {
   BackButton,
   SelectionButton,
@@ -19,7 +19,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Choix edition
+  // Choix édition
   const [selectedEdition, setSelectedEdition] = useState("Edition standard");
 
   // Choix plateforme
@@ -37,9 +37,9 @@ const ProductDetail = () => {
       try {
         setLoading(true);
 
-        // Récup jeux
+        // Récupération du produit via la vue "v_products" pour inclure creators_name et editors_name
         const { data: productData, error: productError } = await supabase
-          .from("products")
+          .from("v_products")
           .select("*")
           .eq("id_products", id_products)
           .single();
@@ -54,14 +54,6 @@ const ProductDetail = () => {
 
         if (platformsError) throw platformsError;
 
-        // Récup editeur
-        const { data: editorsData, error: editorsError } = await supabase
-          .from("v_editors_products")
-          .select("*")
-          .eq("id_products", id_products);
-
-        if (editorsError) throw editorsError;
-
         // Récup genres du jeux
         const { data: genresData, error: genresError } = await supabase
           .from("v_genres_products")
@@ -70,11 +62,10 @@ const ProductDetail = () => {
 
         if (genresError) throw genresError;
 
-        // Affichage de toute les données
+        // Combinaison des données
         const combinedData = {
           ...productData,
           platforms: platformsData || [],
-          editors: editorsData || [],
           genres: genresData || [],
         };
         setProduct(combinedData);
@@ -93,7 +84,7 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id_products]);
 
-  // Visibilité popup pendant 3 sec
+  // Visibilité popup panier pendant 3 sec
   useEffect(() => {
     let timer;
     if (showPopup) {
@@ -204,7 +195,7 @@ const ProductDetail = () => {
         <div
           style={{
             position: "fixed",
-            top: "20px",
+            top: showPopup ? "110px" : "20px", // Décalage si le popup panier est affiché
             right: "20px",
             backgroundColor: "#e91e63",
             color: "white",
@@ -422,17 +413,15 @@ const ProductDetail = () => {
                     marginBottom: "20px",
                   }}
                 >
-                  {/* Développé par :*/}
+                  {/* Développé par : */}
                   <div>
                     <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
                       Développé par :
                     </h3>
-                    {product.creators && product.creators.length > 0 ? (
-                      product.creators.map((creator) => (
-                        <p key={creator.id_creators}>{creator.name}</p>
-                      ))
+                    {product.creators_name ? (
+                      <p>{product.creators_name}</p>
                     ) : (
-                      <p> Studio de dev non renseigné.</p>
+                      <p>Studio de dev non renseigné.</p>
                     )}
                   </div>
 
@@ -441,10 +430,8 @@ const ProductDetail = () => {
                     <h3 style={{ fontWeight: "bold", marginBottom: "5px" }}>
                       Edité par :
                     </h3>
-                    {product.editors && product.editors.length > 0 ? (
-                      product.editors.map((editor) => (
-                        <p key={editor.id_editors}>{editor.name}</p>
-                      ))
+                    {product.editors_name ? (
+                      <p>{product.editors_name}</p>
                     ) : (
                       <p>Aucun éditeur renseigné.</p>
                     )}
