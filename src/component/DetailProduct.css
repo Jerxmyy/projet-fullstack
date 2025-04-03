@@ -74,7 +74,7 @@
   flex-wrap: wrap;
 }
 
-/* Conteneur de l'image du produit */
+/* Image produit */
 .image-container {
   flex: 1;
   min-width: 980px;
@@ -99,7 +99,7 @@
   margin-bottom: 20px;
 }
 
-/* Sélection de plateforme */
+/* Sélection plateforme */
 .platform-selection {
   margin-bottom: 20px;
 }
@@ -110,7 +110,7 @@
   gap: 10px;
 }
 
-/* Infos stock et téléchargement */
+/* Infos stock + téléchargement */
 .stock-info {
   display: flex;
   gap: 15px;
@@ -156,7 +156,7 @@
   font-weight: bold;
 }
 
-/* Boutons CTA */
+/* CTA */
 .cta-container {
   display: flex;
   gap: 10px;

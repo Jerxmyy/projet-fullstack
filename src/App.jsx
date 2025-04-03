@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import ProductCard from "./component/ListProduct";
 import ProductDetail from "./component/DetailProduct";
 import { supabase } from "./supabaseClient";
+import NavScrollExample from "./component/NavBar";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -45,6 +46,7 @@ function App() {
           backgroundColor: "#191F40",
         }}
       >
+        <NavScrollExample></NavScrollExample>
         <h1 style={{ width: "100%", textAlign: "start", marginBottom: "30px" }}>
           Votre prochaine aventure commence ici !
         </h1>

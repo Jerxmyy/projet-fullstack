@@ -1,17 +1,17 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
+import NavScrollExample from "./NavBar";
 import {
   BackButton,
   SelectionButton,
   IconButton,
   PrimaryButton,
 } from "./ButtonComponents";
-import "./ProductDetail.css";
+import "./DetailProduct.css";
 
 const ProductDetail = () => {
   const { id_products } = useParams();
-
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,7 +34,7 @@ const ProductDetail = () => {
       try {
         setLoading(true);
 
-        // Récupération du produit via la vue "v_products"
+        // Récupération du produit via vue "v_products"
         const { data: productData, error: productError } = await supabase
           .from("v_products")
           .select("*")
@@ -43,7 +43,7 @@ const ProductDetail = () => {
 
         if (productError) throw productError;
 
-        // Récup plateforme dispo
+        // Récup plateforme dispo via vue "v_platforms_products"
         const { data: platformsData, error: platformsError } = await supabase
           .from("v_platforms_products")
           .select("*")
@@ -51,7 +51,7 @@ const ProductDetail = () => {
 
         if (platformsError) throw platformsError;
 
-        // Récup genres du jeux
+        // Récup genres du jeux via vue "v_genres_products"
         const { data: genresData, error: genresError } = await supabase
           .from("v_genres_products")
           .select("*")
@@ -70,6 +70,7 @@ const ProductDetail = () => {
           setSelectedPlatform(platformsData[0].name);
         }
       } catch (err) {
+        // Message pour quand ca plante
         setError("Erreur lors du chargement du produit");
         console.error(err);
       } finally {
@@ -177,7 +178,6 @@ const ProductDetail = () => {
               backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(${product.img_url})`,
             }}
           ></div>
-
           <div className="content-wrapper">
             <div className="main-zone">
               {/* img jeux */}
