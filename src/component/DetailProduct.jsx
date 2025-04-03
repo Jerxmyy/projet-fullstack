@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-import GameLibNavbar from "./NavBar";
 import {
   BackButton,
   SelectionButton,

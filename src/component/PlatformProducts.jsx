@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import ProductDetail from "./DetailProduct";
 import GameLibNavbar from "./NavBar";
 import ProductCard from "./CardProduct";
+import { BackButton } from "./ButtonComponents";
 
 function PlatformProducts() {
   const { id_platforms } = useParams(); // Récupère l'ID de la plateforme depuis l'URL
@@ -47,12 +49,13 @@ function PlatformProducts() {
       <h1 className="platform-title">
         Produits pour la plateforme {id_platforms}
       </h1>
+
       {products.length ? (
         <div className="products-container">
           {products.map((product) => (
             <ProductCard
-              key={product.id}
-              id_products={product.id}
+              key={product.id_products}
+              id_products={product.id_products}
               title={product.title || "Sans titre"}
               price={Number(product.price) || 0}
               img_url={product.img_url}
