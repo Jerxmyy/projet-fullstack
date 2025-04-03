@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import ProductCard from "./component/ListProduct";
+import ProductCard from "./component/CardProduct";
 import ProductDetail from "./component/DetailProduct";
 import { supabase } from "./supabaseClient";
 import GameLibNavbar from "./component/NavBar";
@@ -31,7 +31,6 @@ function App() {
     fetchProducts();
   }, []);
 
-  // Page d'accueil qui affiche la liste des produits
   const HomePage = () => {
     if (loading) return <div>Chargement des produits...</div>;
     if (error) return <div>Erreur: {error}</div>;
@@ -51,6 +50,7 @@ function App() {
         <h1 style={{ width: "100%", textAlign: "start", marginBottom: "30px" }}>
           Votre prochaine aventure commence ici !
         </h1>
+
         {products.length === 0 ? (
           <p>Aucun produit disponible</p>
         ) : (
