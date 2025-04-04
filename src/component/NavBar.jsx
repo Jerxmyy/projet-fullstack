@@ -36,6 +36,14 @@ function GameLibNavbar() {
   return (
     <Navbar expand="lg" className="game-navbar">
       <Container fluid>
+        <Navbar.Brand as={Link} to="/">
+          <img
+            src="https://img.icons8.com/fluent/512/eneba.png"
+            alt="Game Library Logo"
+            className="navbar-logo"
+            style={{ height: "40px" }}
+          />
+        </Navbar.Brand>
         <Nav className="me-auto navbar-nav">
           {error && (
             <Nav.Link className="text-danger">Erreur: {error}</Nav.Link>
@@ -47,7 +55,7 @@ function GameLibNavbar() {
               <Nav.Link
                 key={platform.id}
                 as={Link}
-                to={`/product/platform/${platform.id}`} // Lien mis à jour avec react-router-dom
+                to={`/product/platform/${platform.id}`}
               >
                 {platformIcons[platform.name] || null} {platform.name}
               </Nav.Link>
