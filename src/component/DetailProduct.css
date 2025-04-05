@@ -65,7 +65,6 @@
   color: white;
 }
 
-/* Zone principale (image et infos) */
 .main-zone {
   display: flex;
   flex-direction: row;
@@ -220,4 +219,31 @@
 /* Quand ca plante */
 .error-message {
   color: red;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .main-zone {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-container {
+    max-width: 100%;
+  }
+
+  .product-img {
+    width: 90%;
+    height: auto;
+    margin-left: 0;
+  }
+
+  .product-info {
+    max-width: 90%;
+  }
+
+  .description-section {
+    max-width: 90%;
+    margin: 40px auto 0;
+  }
 }
