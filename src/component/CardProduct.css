@@ -61,7 +61,7 @@
 
 /* Responsive */
 
-/* Smartphones (max-width: 600px) */
+/* Smartphones (jusqu'a 600px) */
 @media screen and (max-width: 600px) {
   .products-container {
     flex-direction: column;
@@ -78,19 +78,19 @@
   }
 }
 
-/* Tablettes et petits laptops (min-width: 601px) and (max-width: 1024px) */
+/* Tablettes et petits laptops (601px --> 1024px) */
 @media screen and (min-width: 601px) and (max-width: 1024px) {
   .products-container {
     justify-content: center;
   }
 
   .product-card {
-    width: 45%;
+    width: 100%;
     margin-bottom: 20px;
   }
 }
 
-/* Desktops (min-width: 1025px) */
+/* Desktops (1025px --> 1800px) */
 @media screen and (min-width: 1025px) {
   .products-container {
     justify-content: space-evenly;
@@ -101,7 +101,7 @@
   }
 }
 
-/* Très grands écrans (min-width: 1800px) */
+/* Très grands écrans (a partir de 1800px) */
 @media screen and (min-width: 1800px) {
   .products-container {
     justify-content: center;
